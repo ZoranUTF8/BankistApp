@@ -30,9 +30,7 @@ const account4 = {
 
 const account5 = {
   owner: "Zoran Janjic",
-  movements: [
-    430, 1000, 700, 50, 90, -140, 200, -200, 340, -300, -20, 50, 400, -460,
-  ],
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1,
   pin: 1989,
 };
@@ -79,9 +77,15 @@ const updateUI = (acc) => {
   calculateDisplaySummary(acc);
 };
 // display the movements from the account
-const displayMovements = (movementsArray) => {
+const displayMovements = function (movementsArray, sort = false) {
+  // make a copy of the array so we dont modify the original array
+
+  const movs = sort
+    ? movementsArray.slice().sort((a, b) => a - b)
+    : movementsArray;
+
   // loop over the array and create the specific html for it
-  movementsArray.forEach((item, indx) => {
+  movs.forEach((item, indx) => {
     const movementType = item > 0 ? "deposit" : "withdrawal";
 
     const movementWithdrawalHTML = `
@@ -230,3 +234,19 @@ btnLoan.addEventListener("click", (e) => {
   }
   inputLoanAmount.value = "";
 });
+
+// * SORT MOVEMENTS
+//  var to store the sorting or not state
+let sorted = false;
+btnSort.addEventListener("click", function (e) {
+  e.preventDefault();
+  displayMovements(currentUser.movements, !sorted);
+  sorted = !sorted;
+});
+
+// * EXTRA
+// calculate all the movements from all accounts
+const allAccountsMovements = allAccounts
+  .map((acc) => acc.movements)
+  .flat()
+  .reduce((acc, ele) => acc + ele);
